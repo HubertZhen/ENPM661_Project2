@@ -1,6 +1,6 @@
 # ENPM661_Project2
 To RUN:
->>> python Dijkstra_point.py
+python Dijkstra_point.py
 
 Give Values of inital Point (X,Y):
 Example(for (5,5)): 5 5
