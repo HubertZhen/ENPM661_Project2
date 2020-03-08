@@ -1,5 +1,6 @@
 import pygame
 import pygame.gfxdraw
+import math
 
 pygame.init()
 
@@ -12,16 +13,14 @@ obs3_pts = set()
 obs4_pts = set()
 obs5_pts = set()
 
-startColor = (0, 255, 0)
+startColor = (255,255,0)
 goalColor = (255, 0, 0)
 obstacleColor = (0, 0, 0)
 pathColor = (0, 0, 255)
 
 puzzleMap = pygame.display.set_mode((MAX_X, MAX_Y))
 puzzleMap.fill((255, 255, 255))
-
 pygame.draw.circle(puzzleMap, obstacleColor, (225,50), 25)
-
 pygame.draw.ellipse(puzzleMap, obstacleColor, (110, 80, 80, 40))
 
 pygame.draw.polygon(puzzleMap, obstacleColor, ((95,170),(100,161),(35,124),(30,133)))
@@ -30,17 +29,23 @@ pygame.draw.polygon(puzzleMap, obstacleColor, ((225,190),(250,175),(225,160),(20
 
 
 def updateTheStep(position, color, RADIUS):
-	if RADIUS == None:
-		pygame.gfxdraw.pixel(puzzleMap, position[0], position[1], color)
-	else:
-		pygame.draw.circle(puzzleMap, color, (position[0],position[1]), RADIUS)
-	pygame.display.update()
+    for inst in pygame.event.get():
+        if inst.type == pygame.QUIT:
+            pygame.quit()
+            quit()
+    if RADIUS == None or RADIUS == 0:
+        pygame.gfxdraw.pixel(puzzleMap, position[0], position[1], color)
+    else:
+        pygame.draw.circle(puzzleMap, color, (position[0],position[1]), RADIUS)
+    pygame.display.update()
 
 
 def showPath(pathList, RADIUS):
 	for step in pathList:
-		pygame.draw.circle(puzzleMap, pathColor, (step[0], step[1]), RADIUS)
-		#pygame.gfxdraw.pixel(puzzleMap, step[0], step[1], pathColor)
+		if RADIUS == None or RADIUS == 0:
+			pygame.gfxdraw.pixel(puzzleMap, step[0], step[1], pathColor)
+		else:
+			pygame.draw.circle(puzzleMap, pathColor, (step[0], step[1]), RADIUS)
 		pygame.display.update()
 
 
@@ -57,7 +62,8 @@ def inObs1(pos, CLEARANCE):
 		return True
 	else:
 		x, y = pos[0], pos[1]
-		if ((8 * x + 5 * y <= 1610+(CLEARANCE*10)) and (-38 * x + 65 * y >= 6730-CLEARANCE*10)) and (9 * x + 5 * y >= 935-(CLEARANCE*10)) and (37 * x - 65 * y >= -7535-(CLEARANCE*10)):
+		if ((8 * x + 5 * y <= 1610+math.ceil(CLEARANCE*10.67)) and (-38 * x + 65 * y >= 6730-math.ceil(CLEARANCE*106.16)) and (9 * x + 5 * y >= 935-math.ceil(CLEARANCE*10.67)) and (37 * x - 65 * y >= -7535-math.ceil(CLEARANCE*106.16))):
+            #if ((8 * x + 5 * y <= 1610+(CLEARANCE**3)) and (-38 * x + 65 * y >= 6730-((CLEARANCE+1)**4)) and (9 * x + 5 * y >= 935-(CLEARANCE**3)) and (37 * x - 65 * y >= -7535-((CLEARANCE+1)**4))):
 			obs1_pts.add(pos)
 			return True
 		else:
@@ -68,8 +74,8 @@ def inObs2(pos, CLEARANCE):
 		return True
 	else:
 		x, y = pos[0], pos[1]
-		if ((13 * x + y >= 340-(CLEARANCE*10)) and (x + y <= 100+(CLEARANCE*10)) and (-7 * x + 5 * y >= -100-(CLEARANCE*10)) or (-6 * x + 5 * y <= -50+(CLEARANCE*10)) and (6 * x + 5 * y <= 850+(CLEARANCE*10)) and (7 * x - 5 * y <= 450+(10*CLEARANCE)) and \
-		 (y >= 15-(CLEARANCE*10)) and (-7 * x + 5 * y <= -100+(CLEARANCE*10))):
+		if ((13 * x + y >= 340-math.ceil(CLEARANCE*12)) and (x + y <= 100+math.ceil(CLEARANCE)) and (-7 * x + 5 * y >= -100-math.ceil(CLEARANCE*90.16)) and (y >= 15-(CLEARANCE)) or (-6 * x + 5 * y <= -50+math.ceil(CLEARANCE*10)) and (6 * x + 5 * y <= 850+math.ceil(CLEARANCE*10.67)) and (7 * x - 5 * y <= 450+math.ceil(CLEARANCE*10.67)) and \
+		 (y >= 15-(CLEARANCE)) and (-7 * x + 5 * y <= -100+math.ceil(CLEARANCE*15))):
 			obs2_pts.add(pos)
 			return True
 		else:
@@ -102,7 +108,7 @@ def inObs5(pos, CLEARANCE):
 		return True
 	else:
 		x, y = pos[0], pos[1] 
-		if ((3 * x + 5 * y <= 1625+(CLEARANCE*10)) and  (5 * y - 3 * x <= 275+(CLEARANCE*10)) and (3 * x + 5 * y >= 1475-(CLEARANCE*10)) and (5 * y - 3 * x >= 125-(CLEARANCE*10))):
+		if (3 * x + 5 * y <= 1625+(CLEARANCE*7)) and  (5 * y - 3 * x <= 275+(CLEARANCE*7)) and (3 * x + 5 * y >= 1475-(CLEARANCE*5)) and (5 * y - 3 * x >= 125-(CLEARANCE*5)):
 			obs5_pts.add(pos)
 			return True
 		else:
